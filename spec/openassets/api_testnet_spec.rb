@@ -262,7 +262,7 @@ describe 'OpenAssets::Api use testnet', :network => :testnet do
       context 'cache memory' do
         subject {
           testnet_mock = double('BitcoinCoreProviderTestnet Mock')
-          api = OpenAssets::Api.new({:cache => ':memory:', :network => 'testnet'})
+          api = OpenAssets::Api.new({:cache => {:cache_provider => 'sqlite', :path => ':memory:'}, :network => 'testnet'})
           allow(testnet_mock).to receive(:list_unspent).and_return(TESTNET_BTC_UNSPENT)
           load_tx_mock(testnet_mock)
           allow(api).to receive(:provider).and_return(testnet_mock)
@@ -292,7 +292,7 @@ describe 'OpenAssets::Api use testnet', :network => :testnet do
   describe 'calculate fees' do
     subject {
       testnet_mock = double('BitcoinCoreProviderTestnet Mock')
-      api = OpenAssets::Api.new({:cache => ':memory:', :network => 'testnet', :default_fees => :auto})
+      api = OpenAssets::Api.new({:cache => {:cache_provider => 'sqlite', :path => ':memory:'}, :network => 'testnet', :default_fees => :auto})
       allow(testnet_mock).to receive(:list_unspent).and_return(TESTNET_BTC_UNSPENT)
       load_tx_mock(testnet_mock)
       allow(api).to receive(:provider).and_return(testnet_mock)
@@ -329,7 +329,7 @@ describe 'OpenAssets::Api use testnet', :network => :testnet do
 
   def create_api
     testnet_mock = double('BitcoinCoreProviderTestnet Mock')
-    api = OpenAssets::Api.new({:cache => ':memory:', :network => 'testnet'})
+    api = OpenAssets::Api.new({:cache => {:cache_provider => 'sqlite', :path => ':memory:'}, :network => 'testnet'})
     allow(testnet_mock).to receive(:list_unspent).and_return(TESTNET_BTC_UNSPENT)
     load_tx_mock(testnet_mock)
     allow(api).to receive(:provider).and_return(testnet_mock)

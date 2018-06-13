@@ -2,7 +2,7 @@ require 'spec_helper'
 describe OpenAssets::Cache::OutputCache do
 
   subject{
-    OpenAssets::Cache::OutputCache.new(':memory:')
+    OpenAssets::Cache::OutputCache.new({:cache_provider => 'sqlite', :path => ':memory:'})
   }
 
   it 'output cache' do

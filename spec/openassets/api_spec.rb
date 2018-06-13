@@ -13,7 +13,7 @@ describe 'OpenAssets::Api use mainnet' do
     expect(api.config[:rpc][:open_timeout]).to eq(60)
     expect(api.config[:min_confirmation]).to eq(1)
     expect(api.config[:max_confirmation]).to eq(9999999)
-    expect(api.config[:cache]).to eq('cache.db')
+    expect(api.config[:cache][:path]).to eq('cache.db')
     expect(Bitcoin.network_name).to eq(:bitcoin)
     api = OpenAssets::Api.new(JSON.parse(File.read("#{File.dirname(__FILE__)}/../test-config.json"), {:symbolize_names => true}))
     expect(api.is_testnet?).to be true
