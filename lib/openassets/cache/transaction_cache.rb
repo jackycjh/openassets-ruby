@@ -16,7 +16,7 @@ module OpenAssets
       # @param[String] txid A transaction id.
       # @param[String] serialized_tx A a hex-encoded serialized transaction.
       def put(txid, serialized_tx)
-        @db_provider.execute('INSERT OR REPLACE INTO Tx (TransactionHash, SerializedTx) VALUES (?, ?)', [txid, serialized_tx])
+        @db_provider.execute("#{@db_provider.get_sql_insert_ignore()} INTO Tx (TransactionHash, SerializedTx) VALUES (?, ?)", [txid, serialized_tx])
       end
     end
 

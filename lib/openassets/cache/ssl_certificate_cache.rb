@@ -26,7 +26,7 @@ module OpenAssets
       # @param[String] subject The SSL Certificate subject value.
       # @param[Time] expire_date The expire date of SSL Certificate.
       def put(url, subject, expire_date)
-        @db_provider.execute('INSERT OR REPLACE INTO SslCertificate (Url, Subject, ExpireDate) VALUES (?, ?, ?)', [url, subject, expire_date.to_i])
+        @db_provider.execute("#{@db_provider.get_sql_insert_ignore()} INTO SslCertificate (Url, Subject, ExpireDate) VALUES (?, ?, ?)", [url, subject, expire_date.to_i])
       end
 
     end

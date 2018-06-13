@@ -49,6 +49,11 @@ module OpenAssets
         return @db_client.execute(sql_statement, parameters)
       end
 
+      # Get SQL convention for ignoring duplicate inserts.
+      def get_sql_insert_ignore()
+        return 'INSERT OR REPLACE'
+      end
+
     end
 
   end

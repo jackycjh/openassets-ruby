@@ -13,9 +13,45 @@ module OpenAssets
         setup
       end
 
-      # TODO: Setup table ddl.
+      # Setup table ddl.
       def setup
-        raise StandardError.new('need setup method implementation.')
+        @db_client.query <<-SQL
+          CREATE TABLE IF NOT EXISTS Tx(
+            TransactionHash varchar(128),
+            SerializedTx varchar(4096),
+            PRIMARY KEY (TransactionHash));
+        SQL
+
+        @db_client.query <<-SQL
+          CREATE TABLE IF NOT EXISTS Output(
+            TransactionHash varchar(128),
+            OutputIndex int,
+            Value bigint,
+            Script varchar(4096),
+            AssetId varchar(160),
+            AssetQuantity int,
+            OutputType int,
+            Metadata varchar(256),
+            PRIMARY KEY (TransactionHash, OutputIndex));
+        SQL
+
+        @db_client.query <<-SQL
+          CREATE TABLE IF NOT EXISTS SslCertificate(
+            Url varchar(256),
+            Subject nvarchar(128),
+            ExpireDate nvarchar(64),
+            PRIMARY KEY (Url));
+        SQL
+      end
+
+      # Execute statements.
+      def execute(sql_statement, parameters = [])
+        return @db_client.query(sql_statement, parameters)
+      end
+
+      # Get SQL convention for ignoring duplicate inserts.
+      def get_sql_insert_ignore()
+        return 'INSERT IGNORE'
       end
 
     end
