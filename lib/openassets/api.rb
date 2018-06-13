@@ -16,7 +16,11 @@ module OpenAssets
 
     def initialize(config = nil)
       @config = {:network => 'mainnet',
-                 :provider => 'bitcoind', :cache => 'cache.db',
+                 :provider => 'bitcoind',
+                 :cache => {:cache_provider => 'sqlite', :path => 'cache.db'},
+                 # Sample for MySQL
+                 # :cache => {:cache_provider => 'mysql', :encoding => 'utf8', :host => 'localhost', :port => 3306,
+                            # :database => 'openassets_cache', :username: 'username', :password: 'password'},
                  :dust_limit => 600, :default_fees => 10000, :min_confirmation => 1, :max_confirmation => 9999999,
                  :rpc => {:host => 'localhost', :port => 8332 , :user => '', :password => '', :wallet => '',
                           :schema => 'https', :timeout => 60, :open_timeout => 60}}
