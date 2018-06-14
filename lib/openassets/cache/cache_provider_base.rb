@@ -14,7 +14,7 @@ module OpenAssets
       end
 
       # Execute statements, implements by subclass.
-      def execute(sql_statement, parameters = [])
+      def execute(sql_statement)
         raise StandardError.new('need setup method implementation.')
       end
 

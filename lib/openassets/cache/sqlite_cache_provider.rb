@@ -45,8 +45,8 @@ module OpenAssets
       end
 
       # Execute statements.
-      def execute(sql_statement, parameters = [])
-        return @db_client.execute(sql_statement, parameters)
+      def execute(sql_statement)
+        return @db_client.execute(sql_statement)
       end
 
       # Get SQL convention for ignoring duplicate inserts.

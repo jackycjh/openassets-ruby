@@ -1,5 +1,6 @@
 module OpenAssets
   module Cache
+
     class SSLCertificateCache < CacheBase
 
       def initialize
@@ -11,10 +12,21 @@ module OpenAssets
       # @param[String] url The URL of asset definition file.
       # @return[String] The subject value. If not found, return nil.
       def get(url)
-        rows = @db_provider.execute('SELECT Subject,ExpireDate FROM SslCertificate WHERE Url = ?', [url])
+        statement = <<-SQL
+          SELECT Subject, ExpireDate
+            FROM SslCertificate
+            WHERE Url = '#{url}'
+        SQL
+
+        rows = @db_provider.execute(statement)
         return nil if rows.empty?
         if rows[0][1].to_i < Time.now.to_i
-          @db_provider.execute('DELETE FROM SslCertificate where Url = ?', [url])
+          delete_statement = <<-SQL
+            DELETE FROM SslCertificate 
+              WHERE Url = '#{url}'
+          SQL
+
+          @db_provider.execute(delete_statement)
           nil
         else
           rows[0][0]
@@ -26,9 +38,16 @@ module OpenAssets
       # @param[String] subject The SSL Certificate subject value.
       # @param[Time] expire_date The expire date of SSL Certificate.
       def put(url, subject, expire_date)
-        @db_provider.execute("#{@db_provider.get_sql_insert_ignore()} INTO SslCertificate (Url, Subject, ExpireDate) VALUES (?, ?, ?)", [url, subject, expire_date.to_i])
+        statement = <<-SQL
+          #{@db_provider.get_sql_insert_ignore()} 
+            INTO SslCertificate (Url, Subject, ExpireDate) 
+            VALUES ('#{url}', '#{subject}', '#{expire_date.to_i}')
+        SQL
+
+        @db_provider.execute(statement)
       end
 
     end
+
   end
 end

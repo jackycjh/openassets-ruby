@@ -8,7 +8,13 @@ module OpenAssets
       # @param[String] txid The transaction id.
       # @return[String] The serialized transaction. If not found transaction, return nil.
       def get(txid)
-        rows = @db_provider.execute('SELECT SerializedTx FROM Tx WHERE TransactionHash = ?', [txid])
+        statement = <<-SQL
+          SELECT SerializedTx
+            FROM Tx
+            WHERE TransactionHash = '#{txid}'
+        SQL
+
+        rows = @db_provider.execute(statement)
         rows.empty? ? nil : rows[0][0]
       end
 
@@ -16,8 +22,15 @@ module OpenAssets
       # @param[String] txid A transaction id.
       # @param[String] serialized_tx A a hex-encoded serialized transaction.
       def put(txid, serialized_tx)
-        @db_provider.execute("#{@db_provider.get_sql_insert_ignore()} INTO Tx (TransactionHash, SerializedTx) VALUES (?, ?)", [txid, serialized_tx])
+        statement = <<-SQL
+          #{@db_provider.get_sql_insert_ignore()}
+            INTO Tx (TransactionHash, SerializedTx)
+            VALUES ('#{txid}', '#{serialized_tx}')
+        SQL
+
+        @db_provider.execute(statement)
       end
+
     end
 
   end
