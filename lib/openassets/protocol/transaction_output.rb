@@ -28,7 +28,7 @@ module OpenAssets
         raise ArgumentError, "invalid asset_quantity. asset_quantity should be unsignd integer. " unless asset_quantity.between?(0, MarkerOutput::MAX_ASSET_QUANTITY)
         @value = value
         @script = script
-        @asset_id = asset_id
+        @asset_id = asset_id unless asset_id.nil? || asset_id.empty?
         @asset_quantity = asset_quantity
         @output_type = output_type
         @metadata = metadata
