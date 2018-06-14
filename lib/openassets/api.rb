@@ -329,11 +329,11 @@ module OpenAssets
               return nil
             end
           end
-          unless current_input.asset_id.nil?
+          unless current_input.asset_id.nil? || current_input.asset_id.empty?
             progress = [input_units_left, output_units_left].min
             output_units_left -= progress
             input_units_left -= progress
-            if asset_id.nil?
+            if asset_id.nil? || asset_id.empty?
               # This is the first input to map to this output
               asset_id = current_input.asset_id
               metadata = current_input.metadata

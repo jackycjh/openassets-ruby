@@ -124,7 +124,7 @@ module OpenAssets
         total_amount = 0
         results = []
         unspent_outputs.each do |output|
-          if output.output.asset_id.nil?
+          if output.output.asset_id.nil? || output.output.asset_id.empty?
             results << output
             total_amount += output.output.value
           end
