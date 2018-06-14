@@ -38,8 +38,11 @@ describe 'OpenAssets::Api use mainnet' do
 
     it 'list_unspent' do
       list = subject.list_unspent
+      puts "##### Test list_unspent size: #{list.size}"
       list.each_with_index { |result, index |
         expect(result['txid']).to eq(OA_UNSPENT[index]['txid'])
+        puts "##### Actual asset_id: #{result['asset_id'].nil? ? 'nil' : result['asset_id'].length}"
+        puts "##### Expected asset_id: #{OA_UNSPENT[index]['asset_id'].nil? ? 'nil' : OA_UNSPENT[index]['asset_id'].length}"
         expect(result['asset_id']).to eq(OA_UNSPENT[index]['asset_id'])
         expect(result['script']).to eq(OA_UNSPENT[index]['script'])
         expect(result['amount']).to eq(OA_UNSPENT[index]['amount'])
@@ -64,12 +67,17 @@ describe 'OpenAssets::Api use mainnet' do
     it 'get_balance' do
       balances = subject.get_balance
       expect(balances.length).to eq(OA_BALANCE.length)
+      puts "##### Test get_balance size: #{balances.size}"
       balances.each_with_index { |balance, index|
         expect(balance['oa_address']).to eq(OA_BALANCE[index][:oa_address])
         expect(balance['address']).to eq(OA_BALANCE[index][:address])
         expect(balance['account']).to eq(get_account(balance['address']))
         expect(balance['value']).to eq(OA_BALANCE[index][:value])
         assets = balance['assets']
+        puts "##### Actual assets length: #{assets.length}"
+        puts "##### Actual assets: #{assets}"
+        puts "##### Expected assets length: #{OA_BALANCE[index][:assets].length}"
+        puts "##### Expected assets: #{OA_BALANCE[index][:assets]}"
         expect(assets.length).to eq(OA_BALANCE[index][:assets].length)
         assets.each_with_index { |a, i|
           expect(a['asset_id']).to eq((OA_BALANCE[index][:assets][i][:asset_id]))
