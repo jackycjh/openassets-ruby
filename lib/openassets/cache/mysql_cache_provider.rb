@@ -1,4 +1,4 @@
-require 'sqlite3'
+require 'mysql2'
 
 module OpenAssets
   module Cache
@@ -60,6 +60,8 @@ module OpenAssets
           end
         end
 
+        # Set rows to a single dimension array if no result.
+        rows = [] if rows[0].empty? 
         return rows
       end
 
