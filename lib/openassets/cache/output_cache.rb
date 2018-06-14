@@ -16,7 +16,7 @@ module OpenAssets
               AND OutputIndex = #{index}
         SQL
 
-        rows = @db_provider.execute(statement)
+        rows = @db_provider.execute_with_result(statement)
         return nil if rows.empty?
         script = Bitcoin::Script.from_string(rows[0][1])
         OpenAssets::Protocol::TransactionOutput.new(rows[0][0], script, rows[0][2], rows[0][3], rows[0][4], rows[0][5])

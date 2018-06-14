@@ -18,6 +18,12 @@ module OpenAssets
         raise StandardError.new('need setup method implementation.')
       end
 
+      # Execute statements with query result, implements by subclass.
+      # The returning result will be normalized into double array.
+      def execute_with_result(sql_statement)
+        raise StandardError.new('need setup method implementation.')
+      end
+
       # Get SQL convention for ignoring duplicate inserts, implements by subclass.
       def get_sql_insert_ignore()
         raise StandardError.new('need setup method implementation.')

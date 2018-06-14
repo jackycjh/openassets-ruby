@@ -14,7 +14,7 @@ module OpenAssets
             WHERE TransactionHash = '#{txid}'
         SQL
 
-        rows = @db_provider.execute(statement)
+        rows = @db_provider.execute_with_result(statement)
         rows.empty? ? nil : rows[0][0]
       end
 

@@ -18,7 +18,7 @@ module OpenAssets
             WHERE Url = '#{url}'
         SQL
 
-        rows = @db_provider.execute(statement)
+        rows = @db_provider.execute_with_result(statement)
         return nil if rows.empty?
         if rows[0][1].to_i < Time.now.to_i
           delete_statement = <<-SQL

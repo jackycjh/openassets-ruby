@@ -46,7 +46,21 @@ module OpenAssets
 
       # Execute statements.
       def execute(sql_statement)
-        return @db_client.query(sql_statement)
+        @db_client.query(sql_statement)
+      end
+
+      # Execute statements with query result.
+      # The returning result will be normalized into double array.
+      def execute_with_result(sql_statement)
+        rows = [[],[]]
+
+        @db_client.query(sql_statement).each_with_index(:as => :array) do |row, i|
+          row.each_with_index do |value, j|
+            rows[i][j] = value
+          end
+        end
+
+        return rows
       end
 
       # Get SQL convention for ignoring duplicate inserts.

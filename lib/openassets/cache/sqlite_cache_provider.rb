@@ -46,6 +46,12 @@ module OpenAssets
 
       # Execute statements.
       def execute(sql_statement)
+        @db_client.execute(sql_statement)
+      end
+
+      # Execute statements with query result.
+      # The returning result will be normalized into double array.
+      def execute_with_result(sql_statement)
         return @db_client.execute(sql_statement)
       end
 
