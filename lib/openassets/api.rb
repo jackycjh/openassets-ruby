@@ -277,6 +277,7 @@ module OpenAssets
 
       # Add the issuance outputs
       puts "########### Nil prev_outs #{prev_outs[0]}" if prev_outs[0].nil?
+      puts "########### Nil prev_outs Size #{prev_outs.size}" if prev_outs[0].nil?
       puts "########### Txhash is #{tx.hash}" if prev_outs[0].nil?
       puts "########### Tx outputs size: #{outputs.size}" if prev_outs[0].nil?
       issuance_asset_id = script_to_asset_id(prev_outs[0].script.to_payload.bth)
