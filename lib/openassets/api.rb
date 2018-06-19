@@ -276,6 +276,7 @@ module OpenAssets
       marker_output = outputs[marker_output_index]
 
       # Add the issuance outputs
+      puts "########### Nil prev_outs #{prev_outs[0]}" if prev_outs[0].nil?
       issuance_asset_id = script_to_asset_id(prev_outs[0].script.to_payload.bth)
 
       for i in (0..marker_output_index-1)
