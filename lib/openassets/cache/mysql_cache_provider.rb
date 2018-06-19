@@ -18,7 +18,7 @@ module OpenAssets
         @db_client.query <<-SQL
           CREATE TABLE IF NOT EXISTS Tx(
             TransactionHash varchar(128),
-            SerializedTx varchar(40960),
+            SerializedTx text,
             PRIMARY KEY (TransactionHash));
         SQL
 
