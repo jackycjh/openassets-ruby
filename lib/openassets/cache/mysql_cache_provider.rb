@@ -18,7 +18,7 @@ module OpenAssets
         @db_client.query <<-SQL
           CREATE TABLE IF NOT EXISTS Tx(
             TransactionHash varchar(128),
-            SerializedTx varchar(4096),
+            SerializedTx varchar(40960),
             PRIMARY KEY (TransactionHash));
         SQL
 
@@ -31,7 +31,7 @@ module OpenAssets
             AssetId varchar(160),
             AssetQuantity int,
             OutputType int,
-            Metadata varchar(256),
+            Metadata varchar(2048),
             PRIMARY KEY (TransactionHash, OutputIndex));
         SQL
 
