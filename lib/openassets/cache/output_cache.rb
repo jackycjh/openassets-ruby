@@ -4,6 +4,17 @@ module OpenAssets
     # An object that can be used for caching coloring transaction output in a Sqlite database.
     class OutputCache < CacheBase
 
+       # Initializes the cache table name.
+      # @param[Hash] config_tables The configuration for the cache tables.
+      def initialize_table_name(config_tables)
+        if config_tables.nil? || config_tables[:output].nil? || config_tables[:output].empty?
+          # Default to backward-compatible Output table.
+          @table_name = 'Output'
+        else
+          @table_name = config_tables[:output]
+        end
+      end
+
       # Get a cached transaction output
       # @param[String] txid The transaction id.
       # @param[Integer] index The index of the output in the transaction.
@@ -11,7 +22,7 @@ module OpenAssets
       def get(txid, index)
         statement = <<-SQL
           SELECT Value, Script, AssetId, AssetQuantity, OutputType, Metadata
-            FROM Output
+            FROM #{@table_name}
             WHERE TransactionHash = '#{txid}'
               AND OutputIndex = #{index}
         SQL
@@ -29,7 +40,7 @@ module OpenAssets
       def put(txid, index, output)
         statement = <<-SQL
           #{@db_provider.get_sql_insert_ignore()}
-            INTO Output (TransactionHash, OutputIndex, Value, Script, AssetId, AssetQuantity, OutputType, Metadata)
+            INTO #{@table_name} (TransactionHash, OutputIndex, Value, Script, AssetId, AssetQuantity, OutputType, Metadata)
             VALUES (
               '#{txid}',
               #{index},

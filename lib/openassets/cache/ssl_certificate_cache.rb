@@ -4,8 +4,21 @@ module OpenAssets
     class SSLCertificateCache < CacheBase
 
       def initialize
-        cache = OpenAssets.configuration ? OpenAssets.configuration[:cache] : {:cache_provider => 'sqlite', :path => ':memory:'}
-        super(cache)
+        cache_config = OpenAssets.configuration ?
+                       OpenAssets.configuration[:cache] :
+                       {:cache_provider => {:adapter => 'sqlite', :path => ':memory:'}}
+        super(cache_config)
+      end
+
+      # Initializes the cache table name.
+      # @param[Hash] config_tables The configuration for the cache tables.
+      def initialize_table_name(config_tables)
+        if config_tables.nil? || config_tables[:ssl_cert].nil? || config_tables[:ssl_cert].empty?
+          # Default to backward-compatible SslCertificate table.
+          @table_name = 'SslCertificate'
+        else
+          @table_name = config_tables[:ssl_cert]
+        end
       end
 
       # Return the subject value which defined by ssl certificate.
@@ -14,7 +27,7 @@ module OpenAssets
       def get(url)
         statement = <<-SQL
           SELECT Subject, ExpireDate
-            FROM SslCertificate
+            FROM #{@table_name}
             WHERE Url = '#{url}'
         SQL
 
@@ -22,7 +35,7 @@ module OpenAssets
         return nil if rows.empty?
         if rows[0][1].to_i < Time.now.to_i
           delete_statement = <<-SQL
-            DELETE FROM SslCertificate 
+            DELETE FROM #{@table_name}
               WHERE Url = '#{url}'
           SQL
 
@@ -40,7 +53,7 @@ module OpenAssets
       def put(url, subject, expire_date)
         statement = <<-SQL
           #{@db_provider.get_sql_insert_ignore()} 
-            INTO SslCertificate (Url, Subject, ExpireDate) 
+            INTO #{@table_name} (Url, Subject, ExpireDate) 
             VALUES ('#{url}', '#{subject}', '#{expire_date.to_i}')
         SQL
 

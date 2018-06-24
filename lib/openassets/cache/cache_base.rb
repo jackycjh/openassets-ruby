@@ -1,5 +1,3 @@
-require 'sqlite3'
-
 module OpenAssets
   module Cache
 
@@ -7,16 +5,26 @@ module OpenAssets
     class CacheBase
 
       attr_reader :db_provider
+      attr_reader :table_name
 
       # Initializes the connection to the database.
       # @param[Hash] config The configuration for the database connection.
       def initialize(config)
-        case config[:cache_provider]
+        case config[:cache_provider][:adapter]
         when 'sqlite'
-          @db_provider = SqliteCacheProvider.new(config[:path])
+          @db_provider = SqliteCacheProvider.new(config[:cache_provider][:path])
         when 'mysql'
-          @db_provider = MysqlCacheProvider.new(config)
+          @db_provider = MysqlCacheProvider.new(config[:cache_provider])
         end
+
+        initialize_table_name(config[:tables])
+        @db_provider.setup(self)
+      end
+
+      # Initializes the cache table name.
+      # @param[Hash] config_tables The configuration for the cache tables.
+      def initialize_table_name(config_tables)
+        raise StandardError.new('need initialize_table_name method implementation.')
       end
 
     end

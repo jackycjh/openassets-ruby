@@ -10,38 +10,42 @@ module OpenAssets
       # @param[Hash] config The config for MySQL connection.
       def initialize(config)
         @db_client = Mysql2::Client.new(config)
-        setup
       end
 
       # Setup table ddl.
-      def setup
-        @db_client.query <<-SQL
-          CREATE TABLE IF NOT EXISTS Tx(
-            TransactionHash varchar(128),
-            SerializedTx text,
-            PRIMARY KEY (TransactionHash));
-        SQL
-
-        @db_client.query <<-SQL
-          CREATE TABLE IF NOT EXISTS Output(
-            TransactionHash varchar(128),
-            OutputIndex int,
-            Value bigint,
-            Script varchar(4096),
-            AssetId varchar(160),
-            AssetQuantity int,
-            OutputType int,
-            Metadata varchar(2048),
-            PRIMARY KEY (TransactionHash, OutputIndex));
-        SQL
-
-        @db_client.query <<-SQL
-          CREATE TABLE IF NOT EXISTS SslCertificate(
-            Url varchar(256),
-            Subject nvarchar(128),
-            ExpireDate nvarchar(64),
-            PRIMARY KEY (Url));
-        SQL
+      # @param[CacheBase] cache The cache instance to be set up.
+      def setup(cache)
+        if cache.is_a?(TransactionCache)
+          @db_client.query <<-SQL
+            CREATE TABLE IF NOT EXISTS #{cache.table_name}(
+              TransactionHash varchar(128),
+              SerializedTx text,
+              PRIMARY KEY (TransactionHash));
+          SQL
+        elsif cache.is_a?(OutputCache)
+          @db_client.query <<-SQL
+            CREATE TABLE IF NOT EXISTS #{cache.table_name}(
+              TransactionHash varchar(128),
+              OutputIndex int,
+              Value bigint,
+              Script varchar(4096),
+              AssetId varchar(160),
+              AssetQuantity int,
+              OutputType int,
+              Metadata varchar(2048),
+              PRIMARY KEY (TransactionHash, OutputIndex));
+          SQL
+        elsif cache.is_a?(SSLCertificateCache)
+          @db_client.query <<-SQL
+            CREATE TABLE IF NOT EXISTS #{cache.table_name}(
+              Url varchar(256),
+              Subject nvarchar(128),
+              ExpireDate nvarchar(64),
+              PRIMARY KEY (Url));
+          SQL
+        else
+          raise StandardError.new("need #{cache.class} table setup implementation.")
+        end
       end
 
       # Execute statements.
