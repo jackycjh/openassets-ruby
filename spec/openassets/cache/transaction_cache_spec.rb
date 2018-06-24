@@ -2,7 +2,7 @@ require 'spec_helper'
 describe OpenAssets::Cache::TransactionCache do
 
   subject{
-    OpenAssets::Cache::TransactionCache.new({:cache_provider => 'sqlite', :path => ':memory:'})
+    OpenAssets::Cache::TransactionCache.new({:cache_provider => {:adapter => 'sqlite', :path => ':memory:'}})
   }
 
   it 'get' do
